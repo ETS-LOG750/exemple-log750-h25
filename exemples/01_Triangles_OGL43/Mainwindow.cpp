@@ -16,15 +16,15 @@ MainWindow::MainWindow()
 int MainWindow::Initialisation()
 {
 	// OpenGL version (usefull for imGUI and other libraries)
-	const char* glsl_version = "#version 460 core";
+	const char* glsl_version = "#version 430 core";
 
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
 
-	// Request OpenGL 4.6
+	// Request OpenGL 4.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
@@ -33,15 +33,15 @@ int MainWindow::Initialisation()
 
 	// glfw window creation
 	// --------------------
-	m_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Triangles DSA - OGL 4.6", NULL, NULL);
+	m_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Triangles (non DSA - OGL 4.3)", NULL, NULL);
 	if (m_window == NULL)
 	{
 		std::cerr << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return 1;
 	}
-	glfwMakeContextCurrent(m_window);
 
+	glfwMakeContextCurrent(m_window);
 	InitializeCallback();
 
 	// glad: load all OpenGL function pointers
@@ -87,40 +87,34 @@ int MainWindow::InitializeGL()
 	if ((vPosLoc = m_mainShader->attributeLocation("pos")) < 0) {
 		std::cerr << "Unable to find shader location for " << "pos" << std::endl;
 		return 3;
-	} else {
-		std::cout << "pos location: " << vPosLoc << "\n";
 	}
 
 	// Generate the geometry and store it inside m_vertices
 	CreateVertices();
 	
 	// Generate VAO and VBO
-	glCreateVertexArrays(1, &m_vao);
-	glCreateBuffers(1, &m_vbo_position);
+	glGenVertexArrays(1, &m_vao);
+	glGenBuffers(1, &m_vbo_position);
 
 	// Load vertices information on GPU (allocation and copy)
-	glNamedBufferData(m_vbo_position, long(sizeof(GLfloat) * m_vertices.size()), m_vertices.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo_position);
+	glBufferData(GL_ARRAY_BUFFER, long(sizeof(GLfloat) * m_vertices.size()),
+		m_vertices.data(), GL_STATIC_DRAW);
 
-	// 1) Define VBO and VAO binding
-	glVertexArrayVertexBuffer(m_vao, 
-		vPosLoc, // Binding point 
-		m_vbo_position, // VBO 
-		0, // Offset 
-		2 * sizeof(GLfloat) // Stride
+	// Activate VAO and specify the layout
+	glBindVertexArray(m_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo_position); // Unecessary if already binded
+	glVertexAttribPointer(vPosLoc, 2,  // 2 components, XY
+		GL_FLOAT, // type 
+		GL_FALSE, // normalize 
+		0,        // stride 
+		BUFFER_OFFSET(0) // ptr (where the data starts)
 	);
+	glEnableVertexAttribArray(vPosLoc);
 
-	// 2) Enable the attribute at location vPosLoc and map it to binding point
-	glEnableVertexArrayAttrib(m_vao, vPosLoc); // Enable the attribute at location vPosLoc
-	glVertexArrayAttribBinding(m_vao, vPosLoc, vPosLoc); // Map the attribute at location vPosLoc to binding point 0
-	
-	// 3) Specify the layout of the attribute at location vPosLoc
-	glVertexArrayAttribFormat(m_vao, 
-		vPosLoc, // Attribute index 
-		2, // Number of components
-		GL_FLOAT, // Type 
-		GL_FALSE, // Normalize 
-		0 // Offset of the first component
-	);
+	// Clean up (optional)
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	return 0;
 }
