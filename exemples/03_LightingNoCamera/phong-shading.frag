@@ -40,6 +40,7 @@ main()
         float specular = pow(max(0.0, dot(EyeDir, r)), n);
 
         // Compute the material model (specular + diffuse)
+        // Assume light intensity is (1,1,1)
         oColor = vec4(vec3(kd * cosTheta + ks * specular), 1.0);
     }
     else

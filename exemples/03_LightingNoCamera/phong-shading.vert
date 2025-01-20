@@ -14,6 +14,7 @@ main()
      fNormal = vNormal;
 
      // Sortie de la position dans le NDC
+     // Plus d'explication sur ce changement de signe dans le sujet du laboratoire 1
      gl_Position = vec4(vPosition.x, vPosition.y, -vPosition.z, vPosition.w);
 }
 

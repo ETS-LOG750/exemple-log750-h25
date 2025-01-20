@@ -17,12 +17,14 @@ main()
     vec3 EyeDirection = vec3(0,0,1);
     vec3 nNormal = normalize(vNormal);
 
-    float diffuse = dot(nNormal, LightDirection);
-    if (diffuse > 0.0)
+    float cosTheta = dot(nNormal, LightDirection);
+    if (cosTheta > 0.0)
     {
         vec3 r = reflect(-LightDirection, nNormal);
         float specular = pow(max(0.0, dot(EyeDirection, r)), n);
-        fColor = vec3(kd * diffuse + ks * specular);
+
+        // Fait l'hypothese que l'intensit de la lumiere est constante (1,1,1)
+        fColor = vec3(kd * cosTheta + ks * specular);
     }
     else
     {
