@@ -26,3 +26,6 @@ add_subdirectory(05_DrawSquares)
 add_subdirectory(05_GeometryShader)
 # - tesselation teapot
 add_subdirectory(05_TesselationTeapot)
+
+# Lab 02: Picking
+add_subdirectory(lab_02_Picking)
