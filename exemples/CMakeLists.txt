@@ -29,3 +29,9 @@ add_subdirectory(05_TesselationTeapot)
 
 # Lab 02: Picking
 add_subdirectory(lab_02_Picking)
+
+# Seance 06: Camera
+# - Lighting with camera
+add_subdirectory(06_LightingCamera)
+# - Unproject 
+add_subdirectory(06_Unproject)
