@@ -47,3 +47,15 @@ add_subdirectory(08_Particules)
 add_subdirectory(09_Texture)
 # - Texture bindless
 add_subdirectory(09_Texture_bindless)
+
+# Seance 10: Texture avancees
+# - Normal mapping
+add_subdirectory(10_NormalMap)
+# - Sky 
+add_subdirectory(10_Sky)
+# - FBO
+add_subdirectory(10_SimpleFBO)
+
+# Seance 12: Shadow
+# - Shadow map
+add_subdirectory(12_ShadowMap)
